@@ -5,25 +5,20 @@ import ClientLayout from './ClientLayout';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const [data, setData] = useState({
-    artefacts: [],
-    cronJobs: []
-  });
+  const [artefacts, setArtefacts] = useState<any[]>([]);
+  const [cronJobs, setCronJobs] = useState<any[]>([]);
 
   useEffect(() => {
     setMounted(true);
-    // Simulation data
-    setData({
-      artefacts: [
-        { id: '1', name: 'Pipeline Principal', status: 'active' },
-        { id: '2', name: 'Backup Nocturne', status: 'idle' },
-        { id: '3', name: 'Alert System', status: 'active' }
-      ],
-      cronJobs: [
-        { id: '1', name: 'Daily Cleanup', status: 'idle' },
-        { id: '2', name: 'Health Check', status: 'running' }
-      ]
-    });
+    setArtefacts([
+      { id: '1', name: 'Pipeline Principal', status: 'active' },
+      { id: '2', name: 'Backup Nocturne', status: 'idle' },
+      { id: '3', name: 'Alert System', status: 'active' }
+    ]);
+    setCronJobs([
+      { id: '1', name: 'Daily Cleanup', status: 'idle' },
+      { id: '2', name: 'Health Check', status: 'running' }
+    ]);
   }, []);
 
   if (!mounted) {
@@ -41,40 +36,34 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
         
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm text-gray-500 mb-1">Artefacts</p>
-            <p className="text-3xl font-bold text-gray-900">{data.artefacts.length}</p>
+            <p className="text-3xl font-bold text-gray-900">{artefacts.length}</p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm text-gray-500 mb-1">Actifs</p>
             <p className="text-3xl font-bold text-green-600">
-              {data.artefacts.filter((a: any) => a.status === 'active').length}
+              {artefacts.filter((a) => a.status === 'active').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm text-gray-500 mb-1">Jobs Total</p>
-            <p className="text-3xl font-bold text-gray-900">{data.cronJobs.length}</p>
+            <p className="text-3xl font-bold text-gray-900">{cronJobs.length}</p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <p className="text-sm text-gray-500 mb-1">En cours</p>
             <p className="text-3xl font-bold text-blue-600">
-              {data.cronJobs.filter((j: any) => j.status === 'running').length}
+              {cronJobs.filter((j) => j.status === 'running').length}
             </p>
           </div>
         </div>
 
-        {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Artefacts */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              Artefacts
-            </h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Artefacts</h2>
             <div className="space-y-3">
-              {data.artefacts.map((art: any) => (
+              {artefacts.map((art) => (
                 <div key={art.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
                   <div>
                     <h3 className="font-semibold text-gray-900">{art.name}</h3>
@@ -92,14 +81,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Cron Jobs */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-              Jobs Programmés
-            </h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Jobs Programmés</h2>
             <div className="space-y-3">
-              {data.cronJobs.map((job: any) => (
+              {cronJobs.map((job) => (
                 <div key={job.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
                   <div>
                     <h3 className="font-semibold text-gray-900">{job.name}</h3>
