@@ -1,85 +1,149 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { TrendingUp, Users, DollarSign, Activity, ArrowUpRight, ArrowDownRight, Bell, Search, Menu } from 'lucide-react';
-
-interface Stats {
-  revenue: number;
-  leads: number;
-  conversionRate: number;
-  activeUsers: number;
-}
+import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [stats, setStats] = useState<Stats>({
+  const [mounted, setMounted] = useState(false)
+  const [stats, setStats] = useState({
     revenue: 45230,
     leads: 1250,
-    conversionRate: 24.8,
-    activeUsers: 8920
-  });
+    conversion: 24.8,
+    users: 8920
+  })
 
   useEffect(() => {
+    setMounted(true)
     const interval = setInterval(() => {
       setStats(prev => ({
-        revenue: prev.revenue + Math.floor(Math.random() * 500 - 100),
-        leads: prev.leads + Math.floor(Math.random() * 20 - 5),
-        conversionRate: Math.max(0, Math.min(100, prev.conversionRate + (Math.random() * 1 - 0.5))),
-        activeUsers: prev.activeUsers + Math.floor(Math.random() * 50 - 20)
-      }));
-    }, 3000);
+        revenue: prev.revenue + Math.floor(Math.random() * 1000 - 200),
+        leads: prev.leads + Math.floor(Math.random() * 10 - 2),
+        conversion: Math.max(0, Math.min(100, prev.conversion + (Math.random() * 2 - 1))),
+        users: prev.users + Math.floor(Math.random() * 50 - 20)
+      }))
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
-    return () => clearInterval(interval);
-  }, []);
+  if (!mounted) return null
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: 'white',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      padding: '20px',
+    },
+    header: {
+      maxWidth: '1200px',
+      margin: '0 auto 40px auto',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: '2.5rem',
+      fontWeight: 'bold',
+      margin: 0,
+      background: 'linear-gradient(to right, #fff, #e0e7ff)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    },
+    grid: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '20px',
+    },
+    card: {
+      background: 'rgba(255, 255, 255, 0.1)',
+      backdropFilter: 'blur(10px)',
+      borderRadius: '16px',
+      padding: '24px',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+    },
+    cardTitle: {
+      fontSize: '0.875rem',
+      opacity: 0.8,
+      marginBottom: '8px',
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.05em',
+    },
+    cardValue: {
+      fontSize: '2rem',
+      fontWeight: 'bold',
+      margin: 0,
+    },
+    trend: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontSize: '0.875rem',
+      marginTop: '8px',
+      padding: '4px 8px',
+      background: 'rgba(255,255,255,0.2)',
+      borderRadius: '20px',
+    }
+  }
 
   const cards = [
-    { title: 'Revenus', value: stats.revenue, unit: '€', icon: DollarSign, trend: '+12.5%', up: true, color: 'from-blue-500 to-blue-600' },
-    { title: 'Leads', value: stats.leads, unit: '', icon: Users, trend: '+8.2%', up: true, color: 'from-purple-500 to-purple-600' },
-    { title: 'Conversion', value: stats.conversionRate.toFixed(1), unit: '%', icon: TrendingUp, trend: '-2.4%', up: false, color: 'from-green-500 to-green-600' },
-    { title: 'Utilisateurs', value: stats.activeUsers, unit: '', icon: Activity, trend: '+18.7%', up: true, color: 'from-orange-500 to-orange-600' }
-  ];
+    { title: 'Revenus', value: `${stats.revenue.toLocaleString()} €`, trend: '+12.5%', good: true },
+    { title: 'Leads', value: stats.leads.toLocaleString(), trend: '+8.2%', good: true },
+    { title: 'Conversion', value: `${stats.conversion.toFixed(1)}%`, trend: '-2.1%', good: false },
+    { title: 'Utilisateurs', value: stats.users.toLocaleString(), trend: '+18.7%', good: true },
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Sales Copilot
-          </h1>
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 hover:bg-gray-100 rounded-lg">
-              <Bell className="w-6 h-6 text-gray-600" />
-            </button>
-          </div>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>🔥 Sales Copilot</h1>
+        <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>
+          {new Date().toLocaleDateString('fr-FR')}
         </div>
-      </nav>
+      </div>
 
-      <main className="p-6 max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Tableau de bord</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {cards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <div key={card.title} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all border border-gray-100">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${card.color} text-white`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <span className={`flex items-center gap-1 text-sm font-semibold ${card.up ? 'text-green-600' : 'text-red-600'}`}>
-                    {card.up ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                    {card.trend}
-                  </span>
-                </div>
-                <h3 className="text-gray-500 text-sm mb-1">{card.title}</h3>
-                <p className="text-3xl font-bold text-gray-800">
-                  {typeof card.value === 'number' ? card.value.toLocaleString() : card.value}
-                  <span className="text-lg text-gray-500 ml-1">{card.unit}</span>
-                </p>
-              </div>
-            );
-          })}
+      <div style={styles.grid}>
+        {cards.map((card, i) => (
+          <div key={i} style={styles.card}>
+            <div style={styles.cardTitle}>{card.title}</div>
+            <div style={styles.cardValue}>{card.value}</div>
+            <div style={{
+              ...styles.trend,
+              color: card.good ? '#86efac' : '#fca5a5',
+              background: card.good ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'
+            }}>
+              {card.good ? '↑' : '↓'} {card.trend}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '40px auto', 
+        background: 'rgba(255,255,255,0.05)', 
+        borderRadius: '16px',
+        padding: '24px',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <h2 style={{ marginTop: 0, marginBottom: '16px' }}>Activité en temps réel</h2>
+        <div style={{ height: '200px', display: 'flex', alignItems: 'end', gap: '8px' }}>
+          {[40, 65, 45, 80, 55, 90, 70, 85, 60, 75].map((h, i) => (
+            <div 
+              key={i} 
+              style={{ 
+                flex: 1, 
+                height: `${h}%`, 
+                background: 'linear-gradient(to top, #3b82f6, #8b5cf6)', 
+                borderRadius: '4px 4px 0 0',
+                opacity: 0.8
+              }} 
+            />
+          ))}
         </div>
-      </main>
+      </div>
     </div>
-  );
+  )
 }
