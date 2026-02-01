@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 
 // ==========================================
-// ICÔNES EN SVG INLINE (pas besoin de lucide-react)
+// ICÔNES EN SVG INLINE
 // ==========================================
 const Icons = {
   Box: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>,
@@ -18,29 +18,25 @@ const Icons = {
 };
 
 // ==========================================
-// CSS ANIMATIONS INLINE (pas besoin de framer-motion)
-// ==========================================
-const styles = {
-  fadeIn: 'animate-[fadeIn_0.5s_ease-out]',
-  slideUp: 'animate-[slideUp_0.5s_ease-out]',
-  pulse: 'animate-[pulse_2s_infinite]',
-  spin: 'animate-[spin_1s_linear_infinite]',
-};
-
-// ==========================================
-// MOCK DATA SAFE
+// MOCK DATA (VIRGULE CORRIGÉE ICI)
 // ==========================================
 const MOCK_DATA = [
-  { type: 'artefacts', artefacts: [
-    { id: '1', name: 'Pipeline Principal', status: 'active', lastUpdated: new Date().toISOString() },
-    { id: '2', name: 'Backup Nocturne', status: 'idle', lastUpdated: new Date().toISOString() },
-    { id: '3', name: 'Alert System', status: 'active', lastUpdated: new Date().toISOString() }
-  ]},
-  { type: 'cronJobs', cronJobs: [
-    { id: '1', name: 'Daily Cleanup', schedule: '0 0 * * *', status: 'idle' },
-    { id: '2', name: 'Health Check', schedule: '*/5 * * * *', status: 'running' }
-  ]}
-};
+  { 
+    type: 'artefacts', 
+    artefacts: [
+      { id: '1', name: 'Pipeline Principal', status: 'active', lastUpdated: new Date().toISOString() },
+      { id: '2', name: 'Backup Nocturne', status: 'idle', lastUpdated: new Date().toISOString() },
+      { id: '3', name: 'Alert System', status: 'active', lastUpdated: new Date().toISOString() }
+    ]
+  },
+  { 
+    type: 'cronJobs', 
+    cronJobs: [
+      { id: '1', name: 'Daily Cleanup', schedule: '0 0 * * *', status: 'idle' },
+      { id: '2', name: 'Health Check', schedule: '*/5 * * * *', status: 'running' }
+    ]
+  }
+];
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -64,16 +60,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* STYLE GLOBAL POUR ANIMATIONS */}
       <style jsx global>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
       `}</style>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/50 border-b border-zinc-800/50 slide-up">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/50 border-b border-zinc-800/50">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -85,7 +80,7 @@ export default function Home() {
           </div>
           <button 
             onClick={() => window.location.reload()}
-            className={`p-2 hover:bg-zinc-800 rounded-lg transition-colors ${loading ? styles.spin : ''}`}
+            className={`p-2 hover:bg-zinc-800 rounded-lg transition-colors ${loading ? 'animate-[spin_1s_linear_infinite]' : ''}`}
           >
             <Icons.Refresh />
           </button>
@@ -99,7 +94,6 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {/* STATS */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               {[
                 { title: 'Artefacts', value: artefacts.length, icon: Icons.Box, color: 'blue' },
@@ -128,7 +122,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* TABS */}
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
               {['overview', 'artefacts', 'cronJobs'].map((tab) => (
                 <button
@@ -145,7 +138,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* CONTENT */}
             <div className="space-y-8">
               {(activeTab === 'overview' || activeTab === 'artefacts') && artefacts.length > 0 && (
                 <section className="opacity-0 animate-[slideUp_0.5s_ease-out_forwards]" style={{ animationDelay: '0.2s' }}>
@@ -226,7 +218,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* FOOTER */}
             <div className="mt-12 pt-8 border-t border-zinc-800 flex items-center justify-between text-sm text-zinc-500">
               <div className="flex items-center gap-2">
                 <span className="text-emerald-500"><Icons.Shield /></span>
