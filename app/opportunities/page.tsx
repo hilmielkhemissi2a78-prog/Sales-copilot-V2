@@ -6,19 +6,15 @@ import { useState, useEffect } from 'react';
 export default function Opportunities() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch('https://sales-copilot-production-0d9c.up.railway.app/opportunities')
       .then(res => res.json())
       .then(data => {
-        setData(data);
+        setData(data || []);
         setLoading(false);
       })
-      .catch(err => {
-        setError('Erreur de connexion');
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -36,18 +32,16 @@ export default function Opportunities() {
       </aside>
       <main className="flex-1 p-8 overflow-auto bg-gray-100">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Appels d'Offres</h1>
-        
-        {loading && <p>Chargement...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        
-        <div className="grid gap-4">
-          {data.map((item: any) => (
-            <div key={item.id} className="bg-white p-6 rounded-lg shadow">
-              <h2 className="font-bold text-lg">{item.title || item.name || 'Sans titre'}</h2>
-              <p className="text-gray-600">{item.description || ''}</p>
-            </div>
-          ))}
-        </div>
+        {loading ? <p>Chargement...</p> : (
+          <div className="grid gap-4">
+            {data.map((item: any) => (
+              <div key={item.id} className="bg-white p-6 rounded-lg shadow">
+                <h2 className="font-bold text-lg">{item.title || item.name || 'AO'}</h2>
+                <p className="text-gray-600">{item.description || ''}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
