@@ -23,10 +23,10 @@ export default function Login() {
         localStorage.setItem('token', data.access_token);
         window.location.href = '/';
       } else {
-        setError('Login échoué');
+        setError('Email ou mot de passe incorrect');
       }
     } catch (err) {
-      setError('Erreur réseau');
+      setError('Erreur de connexion');
     }
   };
 
@@ -34,7 +34,9 @@ export default function Login() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1e293b' }}>
       <form onSubmit={handleSubmit} style={{ background: 'white', padding: '40px', borderRadius: '8px', width: '100%', maxWidth: '400px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '30px' }}>Sales Copilot</h1>
+        
         {error && <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</div>}
+        
         <input 
           type="email" 
           placeholder="Email" 
@@ -43,6 +45,7 @@ export default function Login() {
           style={{ width: '100%', padding: '12px', marginBottom: '15px', border: '1px solid #ddd', borderRadius: '4px' }}
           required
         />
+        
         <input 
           type="password" 
           placeholder="Mot de passe" 
@@ -51,6 +54,7 @@ export default function Login() {
           style={{ width: '100%', padding: '12px', marginBottom: '20px', border: '1px solid #ddd', borderRadius: '4px' }}
           required
         />
+        
         <button type="submit" style={{ width: '100%', padding: '12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>
           Se connecter
         </button>
