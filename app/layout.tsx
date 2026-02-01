@@ -4,9 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  if (pathname === '/login') return <>{children}</>;
+  
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -15,19 +18,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <h1 className="text-xl font-bold">Sales Copilot</h1>
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <Link href="/" className={`block p-3 rounded ${pathname === '/' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Dashboard</Link>
-          <Link href="/opportunities" className={`block p-3 rounded ${pathname === '/opportunities' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>AO</Link>
-          <Link href="/resumes" className={`block p-3 rounded ${pathname === '/resumes' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>CV</Link>
-          <Link href="/matching" className={`block p-3 rounded ${pathname === '/matching' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Matching</Link>
-          <Link href="/push" className={`block p-3 rounded ${pathname === '/push' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Push</Link>
+          <Link href="/" className="block p-3 rounded hover:bg-slate-800">Dashboard</Link>
+          <Link href="/opportunities" className="block p-3 rounded hover:bg-slate-800">AO</Link>
+          <Link href="/resumes" className="block p-3 rounded hover:bg-slate-800">CV</Link>
+          <Link href="/matching" className="block p-3 rounded hover:bg-slate-800">Matching</Link>
+          <Link href="/push" className="block p-3 rounded hover:bg-slate-800">Push</Link>
         </nav>
         <div className="p-4 border-t border-slate-800">
-          <button onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }} className="flex items-center gap-2 text-red-400 w-full p-2 hover:bg-slate-800 rounded">
+          <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="flex items-center gap-2 text-red-400">
             <LogOut className="w-5 h-5" /> Déconnexion
           </button>
         </div>
       </aside>
-      <main className="flex-1 overflow-auto p-8">{children}</main>
+      <main className="flex-1 overflow-auto p-8">
+        {children}
+      </main>
     </div>
   );
 }
