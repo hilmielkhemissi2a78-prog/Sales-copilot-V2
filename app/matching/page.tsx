@@ -11,9 +11,10 @@ export default function Matching() {
     fetch('https://sales-copilot-production-0d9c.up.railway.app/matching')
       .then(res => res.json())
       .then(data => {
-        setData(data);
+        setData(data || []);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -36,7 +37,7 @@ export default function Matching() {
             {data.map((match: any) => (
               <div key={match.id} className="bg-white p-6 rounded-lg shadow flex justify-between">
                 <span>{match.candidate || 'Candidat'}</span>
-                <span>{match.score || '0'}%</span>
+                <span className="font-bold text-blue-600">{match.score || '0'}%</span>
               </div>
             ))}
           </div>
