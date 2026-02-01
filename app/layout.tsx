@@ -1,16 +1,21 @@
 export const metadata = {
   title: 'Sales Copilot',
-  description: 'Dashboard intelligent',
-};
+  description: 'Dashboard',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="fr">
-      <body className="antialiased bg-gray-50">{children}</body>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#0f172a' }}>
+        {children}
+      </body>
     </html>
-  );
+  )
 }
