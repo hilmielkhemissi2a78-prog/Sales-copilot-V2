@@ -6,44 +6,28 @@ import { LogOut } from 'lucide-react';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  
-  // Si c'est la page login, pas de sidebar
-  if (pathname === '/login') {
-    return <>{children}</>;
-  }
+  if (pathname === '/login') return <>{children}</>;
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar bleue */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col">
         <div className="p-6 border-b border-slate-800">
           <h1 className="text-xl font-bold">Sales Copilot</h1>
         </div>
-        
         <nav className="flex-1 p-4 space-y-2">
           <Link href="/" className={`block p-3 rounded ${pathname === '/' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Dashboard</Link>
-          <Link href="/opportunities" className={`block p-3 rounded ${pathname === '/opportunities' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Appels d'offres</Link>
-          <Link href="/resumes" className={`block p-3 rounded ${pathname === '/resumes' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>CVthèque</Link>
-          <Link href="/matching" className={`block p-3 rounded ${pathname === '/matching' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Matching IA</Link>
-          <Link href="/push" className={`block p-3 rounded ${pathname === '/push' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Push CV</Link>
+          <Link href="/opportunities" className={`block p-3 rounded ${pathname === '/opportunities' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>AO</Link>
+          <Link href="/resumes" className={`block p-3 rounded ${pathname === '/resumes' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>CV</Link>
+          <Link href="/matching" className={`block p-3 rounded ${pathname === '/matching' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Matching</Link>
+          <Link href="/push" className={`block p-3 rounded ${pathname === '/push' ? 'bg-blue-600' : 'hover:bg-slate-800'}`}>Push</Link>
         </nav>
-
         <div className="p-4 border-t border-slate-800">
-          <button 
-            onClick={() => {
-              localStorage.removeItem('token');
-              window.location.href = '/login';
-            }}
-            className="flex items-center gap-2 text-red-400 w-full p-2 hover:bg-slate-800 rounded"
-          >
+          <button onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }} className="flex items-center gap-2 text-red-400 w-full p-2 hover:bg-slate-800 rounded">
             <LogOut className="w-5 h-5" /> Déconnexion
           </button>
         </div>
       </aside>
-
-      <main className="flex-1 overflow-auto p-8">
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto p-8">{children}</main>
     </div>
   );
 }
