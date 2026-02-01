@@ -8,7 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const res = await fetch('https://sales-copilot-production-0d9c.up.railway.app/api/v1/auth/login', {
@@ -23,13 +23,13 @@ export default function Login() {
       localStorage.setItem('token', data.access_token);
       router.push('/');
     } else {
-      alert('Erreur de connexion');
+      alert('Login échoué');
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg w-96">
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded-xl shadow-lg w-96">
         <h1 className="text-2xl font-bold mb-6">Sales Copilot</h1>
         <input 
           type="email" 
@@ -37,7 +37,6 @@ export default function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 border rounded-lg mb-4"
-          required
         />
         <input 
           type="password" 
@@ -45,7 +44,6 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-3 border rounded-lg mb-6"
-          required
         />
         <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold">
           Se connecter
