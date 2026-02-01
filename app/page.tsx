@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const [data, setData] = useState<any[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  // Typage explicite pour éviter l'erreur
+  const [data, setData] = useState<Array<any>>([]);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -31,11 +32,11 @@ export default function Dashboard() {
       }
       return res.json();
     })
-    .then(data => {
-      if (Array.isArray(data)) {
-        setData(data);
-      } else if (data && Array.isArray(data.items)) {
-        setData(data.items);
+    .then((responseData: any) => {
+      if (Array.isArray(responseData)) {
+        setData(responseData);
+      } else if (responseData && Array.isArray(responseData.items)) {
+        setData(responseData.items);
       } else {
         setData([]);
       }
@@ -58,7 +59,8 @@ export default function Dashboard() {
     </div>
   );
 
-  const count = data.length;
+  // Calcul du count ici, après vérification
+  const count: number = data.length;
 
   return (
     <div>
@@ -84,10 +86,10 @@ export default function Dashboard() {
       
       <div style={{ marginTop: '30px', background: 'white', padding: '20px', borderRadius: '8px' }}>
         <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Derniers AO</h2>
-        {data.slice(0, 5).map((ao: any) => (
-          <div key={ao.id} style={{ padding: '15px', borderBottom: '1px solid #e5e7eb' }}>
+        {data.slice(0, 5).map((ao: any, index: number) => (
+          <div key={ao.id || index} style={{ padding: '15px', borderBottom: '1px solid #e5e7eb' }}>
             <h4 style={{ fontWeight: 'bold' }}>{ao.title || `AO #${ao.id}`}</h4>
-            <p style={{ color: '#6b7280', fontSize: '14px' }}>{ao.description?.substring(0, 100)}...</p>
+            <p style={{ color: '#6b7280', fontSize: '14px' }}>{ao.description ? ao.description.substring(0, 100) : ''}...</p>
           </div>
         ))}
       </div>
