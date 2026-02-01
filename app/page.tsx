@@ -1,65 +1,90 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Briefcase, FileText, Zap, Send } from 'lucide-react';
 import Link from 'next/link';
 
-const API_URL = 'https://sales-copilot-production-0d9c.up.railway.app';
-
 export default function Dashboard() {
-  const [ao, setAo] = useState(0);
-  const [token, setToken] = useState<string | null>(null);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t = localStorage.getItem('token');
-    setToken(t);
+    // Vérifie si on est côté client
+    if (typeof window === 'undefined') return;
     
-    if (t) {
-      fetch(`${API_URL}/api/v1/opportunities?limit=100`, {
-        headers: { 'Authorization': `Bearer ${t}` }
-      })
-      .then(r => r.json())
-      .then(data => {
-        const list = Array.isArray(data) ? data : (data.items || []);
-        setAo(list.length);
-      });
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      window.location.href = '/login';
+      return;
     }
+
+    fetch('https://sales-copilot-production-0d9c.up.railway.app/api/v1/opportunities?limit=100', {
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        throw new Error('Session expirée');
+      }
+      return res.json();
+    })
+    .then(data => {
+      setData(data);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError(err.message);
+      setLoading(false);
+    });
   }, []);
 
-  if (!token) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-2xl mb-4">Non connecté</h1>
-        <Link href="/login" className="px-6 py-3 bg-blue-600 text-white rounded-lg">
-          Aller à la page de connexion
-        </Link>
-      </div>
-    );
-  }
+  if (loading) return <div style={{ padding: '20px' }}>Chargement...</div>;
+  
+  if (error) return (
+    <div style={{ padding: '20px', color: 'red' }}>
+      <h2>Erreur: {error}</h2>
+      <button onClick={() => window.location.href = '/login'} style={{ padding: '10px 20px', marginTop: '20px' }}>
+        Retour au login
+      </button>
+    </div>
+  );
+
+  const count = Array.isArray(data) ? data.length : 0;
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-4 gap-6">
-        <Link href="/opportunities" className="bg-white rounded-2xl p-6 border shadow-sm">
-          <Briefcase className="w-8 h-8 text-blue-600 mb-4" />
-          <h3 className="text-slate-500">AO Actifs</h3>
-          <p className="text-3xl font-bold">{ao}</p>
+    <div>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>Dashboard</h1>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+        <Link href="/opportunities" style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textDecoration: 'none', color: 'black' }}>
+          <h3 style={{ color: '#6b7280', fontSize: '14px' }}>AO Actifs</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', marginTop: '10px' }}>{count}</p>
         </Link>
-        <Link href="/resumes" className="bg-white rounded-2xl p-6 border shadow-sm">
-          <FileText className="w-8 h-8 text-purple-600 mb-4" />
-          <h3 className="text-slate-500">CV</h3>
-          <p className="text-3xl font-bold">0</p>
-        </Link>
-        <Link href="/matching" className="bg-white rounded-2xl p-6 border shadow-sm">
-          <Zap className="w-8 h-8 text-amber-600 mb-4" />
-          <h3 className="text-slate-500">Matching</h3>
-          <p className="text-3xl font-bold">0</p>
-        </Link>
-        <Link href="/push" className="bg-white rounded-2xl p-6 border shadow-sm">
-          <Send className="w-8 h-8 text-green-600 mb-4" />
-          <h3 className="text-slate-500">Push</h3>
-          <p className="text-3xl font-bold">0</p>
-        </Link>
+        <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ color: '#6b7280', fontSize: '14px' }}>CV</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', marginTop: '10px' }}>0</p>
+        </div>
+        <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ color: '#6b7280', fontSize: '14px' }}>Matching</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', marginTop: '10px' }}>0</p>
+        </div>
+        <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ color: '#6b7280', fontSize: '14px' }}>Push</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', marginTop: '10px' }}>0</p>
+        </div>
+      </div>
+      
+      <div style={{ marginTop: '30px', background: 'white', padding: '20px', borderRadius: '8px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Derniers AO</h2>
+        {Array.isArray(data) && data.slice(0, 5).map((ao: any) => (
+          <div key={ao.id} style={{ padding: '15px', borderBottom: '1px solid #e5e7eb' }}>
+            <h4 style={{ fontWeight: 'bold' }}>{ao.title || `AO #${ao.id}`}</h4>
+            <p style={{ color: '#6b7280', fontSize: '14px' }}>{ao.description?.substring(0, 100)}...</p>
+          </div>
+        ))}
       </div>
     </div>
   );
