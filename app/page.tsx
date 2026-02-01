@@ -1,86 +1,123 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Sidebar from '@/components/Sidebar';
+import ClientLayout from './ClientLayout';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [data, setData] = useState({
+    artefacts: [],
+    cronJobs: []
+  });
 
   useEffect(() => {
     setMounted(true);
+    // Simulation data
+    setData({
+      artefacts: [
+        { id: '1', name: 'Pipeline Principal', status: 'active' },
+        { id: '2', name: 'Backup Nocturne', status: 'idle' },
+        { id: '3', name: 'Alert System', status: 'active' }
+      ],
+      cronJobs: [
+        { id: '1', name: 'Daily Cleanup', status: 'idle' },
+        { id: '2', name: 'Health Check', status: 'running' }
+      ]
+    });
   }, []);
 
   if (!mounted) {
     return (
-      <Sidebar>
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p>Chargement...</p>
-          </div>
+      <ClientLayout>
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-      </Sidebar>
+      </ClientLayout>
     );
   }
 
   return (
-    <Sidebar>
-      <div>
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+    <ClientLayout>
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500">Artefacts</p>
-            <p className="text-2xl font-bold">3</p>
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p className="text-sm text-gray-500 mb-1">Artefacts</p>
+            <p className="text-3xl font-bold text-gray-900">{data.artefacts.length}</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500">Actifs</p>
-            <p className="text-2xl font-bold text-green-600">2</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p className="text-sm text-gray-500 mb-1">Actifs</p>
+            <p className="text-3xl font-bold text-green-600">
+              {data.artefacts.filter((a: any) => a.status === 'active').length}
+            </p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500">Jobs</p>
-            <p className="text-2xl font-bold">2</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p className="text-sm text-gray-500 mb-1">Jobs Total</p>
+            <p className="text-3xl font-bold text-gray-900">{data.cronJobs.length}</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-500">En cours</p>
-            <p className="text-2xl font-bold text-blue-600">1</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p className="text-sm text-gray-500 mb-1">En cours</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {data.cronJobs.filter((j: any) => j.status === 'running').length}
+            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">Artefacts</h2>
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Artefacts */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+              Artefacts
+            </h2>
             <div className="space-y-3">
-              <div className="p-4 bg-gray-50 rounded border">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">Pipeline Principal</span>
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">active</span>
+              {data.artefacts.map((art: any) => (
+                <div key={art.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{art.name}</h3>
+                    <p className="text-xs text-gray-500">ID: {art.id}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    art.status === 'active' 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {art.status}
+                  </span>
                 </div>
-              </div>
-              <div className="p-4 bg-gray-50 rounded border">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">Backup Nocturne</span>
-                  <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">idle</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">Jobs Programmés</h2>
+          {/* Cron Jobs */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+              Jobs Programmés
+            </h2>
             <div className="space-y-3">
-              <div className="p-4 bg-gray-50 rounded border flex justify-between items-center">
-                <span className="font-semibold">Daily Cleanup</span>
-                <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">idle</span>
-              </div>
-              <div className="p-4 bg-gray-50 rounded border flex justify-between items-center">
-                <span className="font-semibold">Health Check</span>
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">running</span>
-              </div>
+              {data.cronJobs.map((job: any) => (
+                <div key={job.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{job.name}</h3>
+                    <p className="text-xs text-gray-500">ID: {job.id}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    job.status === 'running'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {job.status}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </Sidebar>
+    </ClientLayout>
   );
 }
