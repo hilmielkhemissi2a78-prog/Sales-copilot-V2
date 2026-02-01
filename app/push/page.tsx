@@ -11,9 +11,10 @@ export default function Push() {
     fetch('https://sales-copilot-production-0d9c.up.railway.app/push')
       .then(res => res.json())
       .then(data => {
-        setData(data);
+        setData(data || []);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
@@ -35,7 +36,7 @@ export default function Push() {
           <div className="space-y-4">
             {data.map((item: any) => (
               <div key={item.id} className="bg-white p-6 rounded-lg shadow">
-                <p>{item.message || item.status || 'Push notification'}</p>
+                <p>{item.message || item.status || 'Push'}</p>
               </div>
             ))}
           </div>
