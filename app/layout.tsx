@@ -2,37 +2,41 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut } from 'lucide-react';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
+  // Pas de sidebar sur login
   if (pathname === '/login') {
-    return <>{children}</>;
+    return <div>{children}</div>;
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
-        <div className="p-6 border-b border-slate-800">
-          <h1 className="text-xl font-bold">Sales Copilot</h1>
-        </div>
-        <nav className="flex-1 p-4 space-y-2">
-          <Link href="/" className="block p-3 rounded hover:bg-slate-800">Dashboard</Link>
-          <Link href="/opportunities" className="block p-3 rounded hover:bg-slate-800">AO</Link>
-          <Link href="/resumes" className="block p-3 rounded hover:bg-slate-800">CV</Link>
-          <Link href="/matching" className="block p-3 rounded hover:bg-slate-800">Matching</Link>
-          <Link href="/push" className="block p-3 rounded hover:bg-slate-800">Push</Link>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <div style={{ width: '250px', background: '#1e293b', color: 'white', padding: '20px' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '30px' }}>Sales Copilot</h1>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <Link href="/" style={{ padding: '10px', background: pathname === '/' ? '#3b82f6' : 'transparent', borderRadius: '5px', color: 'white', textDecoration: 'none' }}>Dashboard</Link>
+          <Link href="/opportunities" style={{ padding: '10px', background: pathname === '/opportunities' ? '#3b82f6' : 'transparent', borderRadius: '5px', color: 'white', textDecoration: 'none' }}>AO</Link>
+          <Link href="/resumes" style={{ padding: '10px', background: pathname === '/resumes' ? '#3b82f6' : 'transparent', borderRadius: '5px', color: 'white', textDecoration: 'none' }}>CV</Link>
+          <Link href="/matching" style={{ padding: '10px', background: pathname === '/matching' ? '#3b82f6' : 'transparent', borderRadius: '5px', color: 'white', textDecoration: 'none' }}>Matching</Link>
+          <Link href="/push" style={{ padding: '10px', background: pathname === '/push' ? '#3b82f6' : 'transparent', borderRadius: '5px', color: 'white', textDecoration: 'none' }}>Push</Link>
         </nav>
-        <div className="p-4 border-t border-slate-800">
-          <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="flex items-center gap-2 text-red-400">
-            <LogOut className="w-5 h-5" /> Déconnexion
-          </button>
-        </div>
-      </aside>
-      <main className="flex-1 overflow-auto p-8">
+        <button 
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('token');
+              window.location.href = '/login';
+            }
+          }}
+          style={{ marginTop: '30px', padding: '10px', background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+        >
+          Déconnexion
+        </button>
+      </div>
+      <div style={{ flex: 1, padding: '30px', background: '#f3f4f6', overflow: 'auto' }}>
         {children}
-      </main>
+      </div>
     </div>
   );
 }
