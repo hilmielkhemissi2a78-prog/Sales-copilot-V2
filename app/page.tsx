@@ -26,7 +26,7 @@ export default function Dashboard() {
   }, []);
 
   const cards = [
-    { title: 'AO Actifs', value: ao, icon: Briefcase, color: 'bg-blue-500', href: '/opportunities' },
+    { title: 'AO', value: ao, icon: Briefcase, color: 'bg-blue-500', href: '/opportunities' },
     { title: 'CV', value: 0, icon: FileText, color: 'bg-purple-500', href: '/resumes' },
     { title: 'Matching', value: 0, icon: Zap, color: 'bg-amber-500', href: '/matching' },
     { title: 'Push', value: 0, icon: Send, color: 'bg-green-500', href: '/push' },
@@ -39,9 +39,7 @@ export default function Dashboard() {
           const Icon = c.icon;
           return (
             <Link key={c.title} href={c.href} className="bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg">
-              <div className={`p-3 rounded-xl ${c.color} text-white w-fit mb-4`}>
-                <Icon className="w-6 h-6" />
-              </div>
+              <div className={`p-3 rounded-xl ${c.color} text-white w-fit mb-4`}><Icon className="w-6 h-6" /></div>
               <h3 className="text-slate-500 text-sm">{c.title}</h3>
               <p className="text-3xl font-bold">{c.value}</p>
             </Link>
@@ -52,7 +50,6 @@ export default function Dashboard() {
       <div className="bg-white rounded-2xl border shadow-sm">
         <div className="p-6 border-b flex justify-between">
           <h3 className="text-lg font-bold">Appels d'offres ({ao})</h3>
-          <Link href="/opportunities" className="text-blue-600">Voir tout →</Link>
         </div>
         <div className="divide-y">
           {aos.slice(0, 5).map((a: any) => (
@@ -61,7 +58,6 @@ export default function Dashboard() {
                 <h4 className="font-bold">{a.title || `AO #${a.id}`}</h4>
                 <p className="text-sm text-slate-500">{a.description?.substring(0, 100)}...</p>
               </div>
-              <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm">Voir</button>
             </div>
           ))}
         </div>
